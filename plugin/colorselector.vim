@@ -1,9 +1,12 @@
-
 " ColorScheme Selector
 " Author: Cornelius  林佑安 (Yo-An Lin) <cornelius.howl@gmail.com>
 " ScriptType: plugin
 fun! g:SetColor()
   let name = getline('.')
+  if name =~ '^=='
+    return
+  endif
+
   exec 'colors ' . name
   normal j
   redraw
@@ -14,16 +17,42 @@ fun! s:SelectColorS()
   setlocal bufhidden=wipe buftype=nofile nonu fdc=0
   file ColorSchemeSelector
   let files = split(glob(expand('~/.vim/colors/').'*'))
+  let runtime_files = split(glob(expand('$VIMRUNTIME/colors/').'*'))
+
+  let idx = 1
+  cal setline(idx,"== From Vim Runtime ==")
+  let idx+=1
+  for file in runtime_files
+    let name = matchstr( file , '\w\+\(\.vim\)\@=' )
+    if strlen(name) > 0
+      cal setline(idx,name)
+      let idx+=1
+    endif
+  endfor
+
+  cal setline(idx,"== From User Vim Runtime ==")
+  let idx+=1
   for file in files
     let name = matchstr( file , '\w\+\(\.vim\)\@=' )
     if strlen(name) > 0
-      put=name
+      cal setline(idx,name)
+      let idx+=1
     endif
   endfor
-  normal ggdd
   setlocal nomodifiable
   setlocal cursorline
+  cal search( g:colors_name )
+  normal zz
+
+  syn match ColorName +^\w\+$+
+  syn match Header    +^==.*+
+  exec 'syn match CurrentColor +' . g:colors_name . '+'
+
   hi CursorLine gui=reverse
+  hi CursorName guifg=green
+  hi CurrentColor guifg=black guibg=red
+  hi link Header Function
+
   nmap <buffer>  <Enter>  :cal g:SetColor()<CR>
   nmap <buffer>  <C-q>    :q<CR>   
   nmap <buffer>  e        :exec 'tabe ~/.vim/colors/' . getline('.') . '.vim'<CR>
