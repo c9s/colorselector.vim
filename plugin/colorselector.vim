@@ -1,6 +1,6 @@
 " ColorScheme Selector
 " Author: Cornelius  林佑安 (Yo-An Lin) <cornelius.howl@gmail.com>
-" ScriptType: plugin
+" Script Type: plugin
 fun! g:SetColor()
   let name = getline('.')
   if name =~ '^=='
@@ -41,12 +41,14 @@ fun! s:SelectColorS()
   endfor
   setlocal nomodifiable
   setlocal cursorline
-  cal search( g:colors_name )
-  normal zz
 
   syn match ColorName +^\w\+$+
   syn match Header    +^==.*+
-  exec 'syn match CurrentColor +' . g:colors_name . '+'
+  if exists( 'g:colors_name' )
+    cal search( g:colors_name )
+    exec 'syn match CurrentColor +' . g:colors_name . '+'
+  endif
+  normal zz
 
   hi CursorLine gui=reverse
   hi CursorName guifg=green
