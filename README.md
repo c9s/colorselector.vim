@@ -14,6 +14,19 @@ Commands
 BufferMapping
 =============
 
-`<C-q>`   quit window.
+*C-q*  - quit window.
 
-`e`       edit color scheme.
+*e*    - edit
+
+*j*    - apply next
+
+*k*    - apply previous
+
+*R*    - fetch new random scheme
+
+*D*    - delete scheme
+
+*?*    - show help
+
+*C-s*  - setup colorscheme
+
