@@ -63,13 +63,11 @@ fun! g:SetColor()
   redraw
   echo "Current colorscheme: " . name
 endf
-fun! s:SelectColorS()
-  30vnew
-  setlocal bufhidden=wipe buftype=nofile nonu fdc=0
-  file ColorSchemeSelector
+
+
+fun! s:renderList()
   let files = split(glob(expand('~/.vim/colors/').'*'))
   let runtime_files = split(glob(expand('$VIMRUNTIME/colors/').'*'))
-
   let idx = 1
   cal setline(idx,"== From Vim Runtime ==")
   let idx+=1
@@ -80,7 +78,6 @@ fun! s:SelectColorS()
       let idx+=1
     endif
   endfor
-
   cal setline(idx,"== From User Vim Runtime ==")
   let idx+=1
   for file in files
@@ -90,6 +87,25 @@ fun! s:SelectColorS()
       let idx+=1
     endif
   endfor
+endf
+
+fun! s:updateList()
+  setlocal modifiable
+  let cur = getpos('.')
+  silent 1,$ delete _
+  cal s:renderList()
+  setlocal nomodifiable
+  cal setpos('.', cur )
+  cal feedkeys("\r")
+endf
+
+fun! s:SelectColorS()
+  30vnew
+  setlocal bufhidden=wipe buftype=nofile nonu fdc=0
+  file ColorSchemeSelector
+
+  cal s:renderList()
+
   setlocal nomodifiable
   setlocal cursorline
 
@@ -114,7 +130,7 @@ fun! s:SelectColorS()
   nmap <buffer><script>  R      :cal <SID>fetchRandTheme()<CR>
   nmap <buffer><script>  <C-s>  :cal <SID>setupColorScheme( getline('.'),0)<CR>
   nmap <buffer><script>  ?      :cal <SID>help()<CR>
-  nmap <buffer><script>  D      :cal delete( expand( '~/.vim/colors/'.getline('.').'.vim'))<CR>
+  nmap <silent><buffer><script>  D      :cal delete( expand( '~/.vim/colors/'.getline('.').'.vim'))<CR>:cal <SID>updateList()<CR>:echo "Deleted!"<CR>
 endf
 
 fun! s:help()
