@@ -1,6 +1,27 @@
 " ColorScheme Selector
 " Author: Cornelius  林佑安 (Yo-An Lin) <cornelius.howl@gmail.com>
 " Script Type: plugin
+fun! s:fetchRandTheme()
+  if has('mac')
+    let rand = libcallnr("libc.dylib", "rand","")
+  else
+    let rand = libcallnr("libc.so","rand","")
+  endif
+  let nr = rand / 1000000 + 500000
+  let to = expand('~/.vim/colors/inspiration' . rand . '.vim')
+
+  redraw
+  echo "Generating..."
+  cal system('curl http://inspiration.sweyla.com/code/seed/'.rand.'.txt')
+
+  redraw
+  echo "Downloading... => " . to
+  echo system('curl http://inspiration.sweyla.com/code/vim/inspiration'.rand.'.vim -o ' . to )
+  exec 'colors inspiration' . rand
+  redraw
+  echo "Done.."
+endf
+
 fun! g:SetColor()
   let name = getline('.')
   if name =~ '^=='
@@ -8,12 +29,11 @@ fun! g:SetColor()
   endif
 
   exec 'colors ' . name
-  normal j
   redraw
   echo "Current colorscheme: " . name
 endf
 fun! s:SelectColorS()
-  50vnew
+  30vnew
   setlocal bufhidden=wipe buftype=nofile nonu fdc=0
   file ColorSchemeSelector
   let files = split(glob(expand('~/.vim/colors/').'*'))
@@ -58,6 +78,9 @@ fun! s:SelectColorS()
   nmap <buffer>  <Enter>  :cal g:SetColor()<CR>
   nmap <buffer>  <C-q>    :q<CR>   
   nmap <buffer>  e        :exec 'tabe ~/.vim/colors/' . getline('.') . '.vim'<CR>
+  nmap <buffer>  <C-n>    j<CR>
+  nmap <buffer>  <C-p>    k<CR>
 endf
 com! SelectColorS   :cal s:SelectColorS()
 com! EditCurrentColorS :exec printf('tabe ~/.vim/colors/%s.vim',colors_name)
+com! RandCS cal s:fetchRandTheme()
