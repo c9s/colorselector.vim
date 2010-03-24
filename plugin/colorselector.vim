@@ -114,6 +114,7 @@ fun! s:SelectColorS()
   nmap <buffer><script>  R      :cal <SID>fetchRandTheme()<CR>
   nmap <buffer><script>  <C-s>  :cal <SID>setupColorScheme( getline('.'),0)<CR>
   nmap <buffer><script>  ?      :cal <SID>help()<CR>
+  nmap <buffer><script>  D      :cal delete( expand( '~/.vim/colors/'.getline('.').'.vim'))<CR>
 endf
 
 fun! s:help()
@@ -121,7 +122,8 @@ fun! s:help()
   echo "  e    - edit"
   echo "  j    - apply next"
   echo "  k    - apply previous"
-  echo "  R    - fetch new random theme"
+  echo "  R    - fetch new random scheme"
+  echo "  D    - delete scheme"
   echo "  ?    - show help"
   echo "  C-s  - setup colorscheme"
 endf
