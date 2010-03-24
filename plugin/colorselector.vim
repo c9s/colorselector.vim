@@ -23,6 +23,28 @@ fun! s:fetchRandTheme()
   redraw
 
   echo "ColorScheme Name: inspiration" . nr
+  echo "Press S to save configuration."
+
+  exec 'nmap <script><buffer> S  :cal <SID>setupColorScheme("inspiration'.nr.'")<CR>'
+endf
+
+fun! s:setupColorScheme(cs)
+  let lines = readfile(expand('~/.gvimrc'))
+  let idx = 0
+  let found = 0
+  for line in lines
+    if line =~ 'autoconfig$'
+      let lines[ idx ] = 'colors ' . a:cs . '  " autoconfig'
+      let found = 1
+    endif
+    let idx += 1
+  endfor
+  if ! found 
+    cal add(lines, 'colors ' . a:cs . '  " autoconfig')
+  endif
+  cal writefile( lines , expand('~/.gvimrc'))
+  nunmap <buffer> S
+  echo "Saved!"
 endf
 
 fun! g:SetColor()
@@ -83,6 +105,7 @@ fun! s:SelectColorS()
   nmap <buffer>  e        :exec 'tabe ~/.vim/colors/' . getline('.') . '.vim'<CR>
   nmap <buffer>  <C-n>    j<CR>
   nmap <buffer>  <C-p>    k<CR>
+  nmap <buffer><script>  R   :cal <SID>fetchRandTheme()<CR>
 endf
 com! SelectColorS   :cal s:SelectColorS()
 com! EditCurrentColorS :exec printf('tabe ~/.vim/colors/%s.vim',colors_name)
