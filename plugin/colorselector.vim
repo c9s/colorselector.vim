@@ -8,7 +8,7 @@ fun! s:fetchRandTheme()
   else
     let rand = libcallnr("libc.so","rand","")
   endif
-  let nr = rand % 100000 + 500000
+  let nr = rand % 1000000 + 500000
   let to = expand('~/.vim/colors/inspiration' . nr . '.vim')
 
   echo "Generating..."
@@ -25,10 +25,10 @@ fun! s:fetchRandTheme()
   echo "ColorScheme Name: inspiration" . nr
   echo "Press S to save configuration."
 
-  exec 'nmap <script><buffer> S  :cal <SID>setupColorScheme("inspiration'.nr.'")<CR>'
+  exec 'nmap <script><buffer> S  :cal <SID>setupColorScheme("inspiration'.nr.'",1)<CR>'
 endf
 
-fun! s:setupColorScheme(cs)
+fun! s:setupColorScheme(cs,unset)
   let lines = readfile(expand('~/.gvimrc'))
   let idx = 0
   let found = 0
@@ -43,7 +43,11 @@ fun! s:setupColorScheme(cs)
     cal add(lines, 'colors ' . a:cs . '  " autoconfig')
   endif
   cal writefile( lines , expand('~/.gvimrc'))
-  nunmap <buffer> S
+
+  if a:unset
+    nunmap <buffer> S
+  endif
+
   echo "Saved!"
 endf
 
@@ -106,6 +110,7 @@ fun! s:SelectColorS()
   nmap <buffer>  <C-n>    j<CR>
   nmap <buffer>  <C-p>    k<CR>
   nmap <buffer><script>  R   :cal <SID>fetchRandTheme()<CR>
+  nmap <buffer><script>  S   :cal <SID>setupColorScheme( getline('.'),0)<CR>
 endf
 com! SelectColorS   :cal s:SelectColorS()
 com! EditCurrentColorS :exec printf('tabe ~/.vim/colors/%s.vim',colors_name)
