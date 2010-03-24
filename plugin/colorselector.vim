@@ -4,11 +4,13 @@
 "
 fun! s:fetchRandTheme()
   if has('mac')
+    cal libcallnr("libc.dylib", "srand","")
     let rand = libcallnr("libc.dylib", "rand","")
   else
+    cal libcallnr("libc.so", "srand","")
     let rand = libcallnr("libc.so","rand","")
   endif
-  let nr = rand % 1000000 + 500000
+  let nr = rand % 500000 + 500000
   let to = expand('~/.vim/colors/inspiration' . nr . '.vim')
 
   echo "Generating..."
@@ -109,9 +111,22 @@ fun! s:SelectColorS()
   nmap <buffer>  e        :exec 'tabe ~/.vim/colors/' . getline('.') . '.vim'<CR>
   nmap <buffer>  <C-n>    j<CR>
   nmap <buffer>  <C-p>    k<CR>
-  nmap <buffer><script>  R   :cal <SID>fetchRandTheme()<CR>
-  nmap <buffer><script>  S   :cal <SID>setupColorScheme( getline('.'),0)<CR>
+  nmap <buffer><script>  R      :cal <SID>fetchRandTheme()<CR>
+  nmap <buffer><script>  <C-s>  :cal <SID>setupColorScheme( getline('.'),0)<CR>
+  nmap <buffer><script>  ?      :cal <SID>help()<CR>
 endf
+
+fun! s:help()
+  echo "** ColorScheme Selector **"
+  echo "  e    - edit"
+  echo "  j    - apply next"
+  echo "  k    - apply previous"
+  echo "  R    - fetch new random theme"
+  echo "  ?    - show help"
+  echo "  C-s  - setup colorscheme"
+endf
+
+
 com! SelectColorS   :cal s:SelectColorS()
 com! EditCurrentColorS :exec printf('tabe ~/.vim/colors/%s.vim',colors_name)
 com! RandCS cal s:fetchRandTheme()
