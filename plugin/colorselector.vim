@@ -1,25 +1,28 @@
 " ColorScheme Selector
 " Author: Cornelius  林佑安 (Yo-An Lin) <cornelius.howl@gmail.com>
 " Script Type: plugin
+"
 fun! s:fetchRandTheme()
   if has('mac')
     let rand = libcallnr("libc.dylib", "rand","")
   else
     let rand = libcallnr("libc.so","rand","")
   endif
-  let nr = rand / 1000000 + 500000
-  let to = expand('~/.vim/colors/inspiration' . rand . '.vim')
+  let nr = rand % 100000 + 500000
+  let to = expand('~/.vim/colors/inspiration' . nr . '.vim')
 
-  redraw
   echo "Generating..."
-  cal system('curl http://inspiration.sweyla.com/code/seed/'.rand.'.txt')
+  redraw
+  cal system('curl http://inspiration.sweyla.com/code/seed/'.nr.'.txt')
 
-  redraw
   echo "Downloading... => " . to
-  echo system('curl http://inspiration.sweyla.com/code/vim/inspiration'.rand.'.vim -o ' . to )
-  exec 'colors inspiration' . rand
   redraw
+  echo system('curl http://inspiration.sweyla.com/code/vim/inspiration'.nr.'.vim -o ' . to )
+  exec 'colors inspiration' . nr
   echo "Done.."
+  redraw
+
+  echo "ColorScheme Name: inspiration" . nr
 endf
 
 fun! g:SetColor()
