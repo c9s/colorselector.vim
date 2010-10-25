@@ -2,6 +2,14 @@
 " Author: Cornelius  林佑安 (Yo-An Lin) <cornelius.howl@gmail.com>
 " Script Type: plugin
 "
+if !exists("$DOTVIM")
+  if has("win16") || has("win32") || has("win64")
+    let $DOTVIM = $VIM."/vimfiles"
+  else
+    let $DOTVIM = $HOME."/.vim"
+  endif
+endif
+
 fun! s:fetchRandTheme()
   if has('mac')
     cal libcallnr("libc.dylib", "srand","")
@@ -11,7 +19,7 @@ fun! s:fetchRandTheme()
     let rand = libcallnr("libc.so","rand","")
   endif
   let nr = rand % 500000 + 500000
-  let to = expand('~/.vim/colors/inspiration' . nr . '.vim')
+  let to = expand('$DOTVIM/colors/inspiration' . nr . '.vim')
 
   echo "Generating..."
   redraw
@@ -66,7 +74,7 @@ endf
 
 
 fun! s:renderList()
-  let files = split(glob(expand('~/.vim/colors/').'*'))
+  let files = split(glob(expand('$DOTVIM/colors/').'*'))
   let runtime_files = split(glob(expand('$VIMRUNTIME/colors/').'*'))
   let idx = 1
   cal setline(idx,"== From Vim Runtime ==")
@@ -124,13 +132,13 @@ fun! s:SelectColorS()
 
   nmap <buffer>  <Enter>  :cal g:SetColor()<CR>
   nmap <buffer>  <C-q>    :q<CR>
-  nmap <buffer>  e        :exec 'tabe ~/.vim/colors/' . getline('.') . '.vim'<CR>
+  nmap <buffer>  e        :exec 'tabe $DOTVIM/colors/' . getline('.') . '.vim'<CR>
   nmap <buffer>  <C-n>    j<CR>
   nmap <buffer>  <C-p>    k<CR>
   nmap <buffer><script>  R      :cal <SID>fetchRandTheme()<CR>
   nmap <buffer><script>  <C-s>  :cal <SID>setupColorScheme( getline('.'),0)<CR>
   nmap <buffer><script>  ?      :cal <SID>help()<CR>
-  nmap <silent><buffer><script>  D      :cal delete( expand( '~/.vim/colors/'.getline('.').'.vim'))<CR>:cal <SID>updateList()<CR>:echo "Deleted!"<CR>
+  nmap <silent><buffer><script>  D      :cal delete( expand( '$DOTVIM/colors/'.getline('.').'.vim'))<CR>:cal <SID>updateList()<CR>:echo "Deleted!"<CR>
 endf
 
 fun! s:help()
@@ -146,5 +154,5 @@ endf
 
 
 com! SelectColorS   :cal s:SelectColorS()
-com! EditCurrentColorS :exec printf('tabe ~/.vim/colors/%s.vim',colors_name)
+com! EditCurrentColorS :exec printf('tabe $DOTVIM/colors/%s.vim',colors_name)
 com! RandCS cal s:fetchRandTheme()
