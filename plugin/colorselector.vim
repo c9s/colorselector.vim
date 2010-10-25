@@ -41,7 +41,7 @@ fun! s:setupColorScheme(cs,unset)
     endif
     let idx += 1
   endfor
-  if ! found 
+  if ! found
     cal add(lines, 'colors ' . a:cs . '  " autoconfig')
   endif
   cal writefile( lines , expand('~/.gvimrc'))
@@ -72,7 +72,7 @@ fun! s:renderList()
   cal setline(idx,"== From Vim Runtime ==")
   let idx+=1
   for file in runtime_files
-    let name = matchstr( file , '\w\+\(\.vim\)\@=' )
+    let name = matchstr( file , '[-[:alnum:]_]\+\(\.vim\)\@=' )
     if strlen(name) > 0
       cal setline(idx,name)
       let idx+=1
@@ -81,7 +81,7 @@ fun! s:renderList()
   cal setline(idx,"== From User Vim Runtime ==")
   let idx+=1
   for file in files
-    let name = matchstr( file , '\w\+\(\.vim\)\@=' )
+    let name = matchstr( file , '[-[:alnum:]_]\+\(\.vim\)\@=' )
     if strlen(name) > 0
       cal setline(idx,name)
       let idx+=1
@@ -109,7 +109,7 @@ fun! s:SelectColorS()
   setlocal nomodifiable
   setlocal cursorline
 
-  syn match ColorName +^\w\+$+
+  syn match ColorName +^[-[:alnum:]_]\+$+
   syn match Header    +^==.*+
   if exists( 'g:colors_name' )
     cal search( g:colors_name )
@@ -123,7 +123,7 @@ fun! s:SelectColorS()
   hi link Header Function
 
   nmap <buffer>  <Enter>  :cal g:SetColor()<CR>
-  nmap <buffer>  <C-q>    :q<CR>   
+  nmap <buffer>  <C-q>    :q<CR>
   nmap <buffer>  e        :exec 'tabe ~/.vim/colors/' . getline('.') . '.vim'<CR>
   nmap <buffer>  <C-n>    j<CR>
   nmap <buffer>  <C-p>    k<CR>
