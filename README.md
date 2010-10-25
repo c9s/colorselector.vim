@@ -7,7 +7,7 @@ provide emacs-like colorscheme selector buffer.
 Commands
 ========
 
-      :SelectColorS  
+      :SelectColorS
 
       :EditCurrentColorS
 
@@ -18,9 +18,9 @@ BufferMapping
 
 *e*    - edit
 
-*j*    - apply next
+*C-n*  - apply next
 
-*k*    - apply previous
+*C-p*  - apply previous
 
 *R*    - fetch new random scheme
 

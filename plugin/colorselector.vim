@@ -144,8 +144,8 @@ endf
 fun! s:help()
   echo "** ColorScheme Selector **"
   echo "  e    - edit"
-  echo "  j    - apply next"
-  echo "  k    - apply previous"
+  echo "  C-n  - apply next"
+  echo "  C-p  - apply previous"
   echo "  R    - fetch new random scheme"
   echo "  D    - delete scheme"
   echo "  ?    - show help"
