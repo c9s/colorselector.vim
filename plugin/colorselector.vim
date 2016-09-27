@@ -74,19 +74,9 @@ endf
 
 
 fun! s:renderList()
-  let files = split(glob(expand('$DOTVIM/colors/').'*'))
-  let runtime_files = split(glob(expand('$VIMRUNTIME/colors/').'*'))
+  let files = split(globpath(&rtp, "colors/*.vim"))
   let idx = 1
   cal setline(idx,"== From Vim Runtime ==")
-  let idx+=1
-  for file in runtime_files
-    let name = matchstr( file , '[-[:alnum:]_]\+\(\.vim\)\@=' )
-    if strlen(name) > 0
-      cal setline(idx,name)
-      let idx+=1
-    endif
-  endfor
-  cal setline(idx,"== From User Vim Runtime ==")
   let idx+=1
   for file in files
     let name = matchstr( file , '[-[:alnum:]_]\+\(\.vim\)\@=' )
